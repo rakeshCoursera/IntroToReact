@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+       <meta charset="UTF-8">
+       <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+       <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+ 
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function MainHeader(props) {
+        return(
+          <div>
+            <h1>{props.title}</h1>
+            <p>{props.desc}</p>
+          </div>
+        );
+      };
+
+      function OptionSelect(props) {
+        var option =  props.dropdown.map(function(val, index){
+          return (<option value={index}>{val}</option>)
+        });
+        return (
+          <div>
+            <h1>{props.optionText}</h1>
+            <form>
+              {props.checkboxText} <input type="checkbox" name="vehicle1" value="Bike" />
+              <br/><br/>
+              {props.dropdownText} &nbsp;
+              <select>
+                {option}
+              </select>
+            </form>
+          </div>
+        );
+      };
+
+      function TableHeader(props) {
+        var headerRow = props.headerRow.map(function(val){
+          return <th>{val}</th>
+        });
+        return (
+          <tr>
+            {headerRow}
+          </tr>
+        );
+      };
+
+      function TableRow(props) {
+        var rows = props.tableRow.map(function(val,index){
+          if(props.tableRow.length-1===index){
+            return <td><button>{val}</button></td>
+          }
+          return <td>{val}</td>
+        });
+        return (
+          <tr>
+            {rows}
+          </tr>
+        );
+      };
+
+      function MakeTable(props){
+        var Table = props.rows.map(function(val){
+          return (
+            <table>
+              <tbody>
+                <TableHeader headerRow={Object.keys(val)}/>
+                <TableRow tableRow={Object.values(val)}/>
+              </tbody>
+            </table> 
+          );
+        });
+        return (
+          <ul>
+            {Table}
+          </ul>
+        );
+      };
+
+      function ListVehicleWithTable(props) {
+        return (
+          <div>
+            <h1>{Object.keys(props.vehicle)[0]}</h1>
+            <MakeTable rows= {props.vehicle[Object.keys(props.vehicle)[0]]} />
+          </div>
+        );
+      };
+
+      function VehiclesBlock(props) {
+        var vehicleNameWithSpec = props.vehiclesWithSpec.map(function(val){
+          return (<ListVehicleWithTable vehicle={val} />)
+        });
+        return (
+          <div>
+            {vehicleNameWithSpec}
+          </div>
+        );
+      };
+
+      function TransportOptions(props){
+        return (
+          <div>
+            <MainHeader title="Welcome to React Transportation" 
+              desc="The best place to buy vehicles online" />
+            <OptionSelect optionText="Choose Online" checkboxText="New Only" 
+              dropdownText="Select Type" dropdown={['All','Cars', 'Trucks', 'Convertibles']}/>
+            <VehiclesBlock vehiclesWithSpec={[
+                {'Cars':
+                  [{'Year':'2013', 'Model':'A', 'Price':'$32000' ,'Buy':'Buy Now'},
+                  {'Year':'2011', 'Model':'B', 'Price':'$4400' ,'Buy':'Buy Now'},
+                  {'Year':'2016', 'Model':'B', 'Price':'$15500' ,'Buy':'Buy Now'}]},
+                {'Trucks': 
+                  [{'Year':'2014', 'Model':'D', 'Price':'$18000' ,'Buy':'Buy Now'},
+                  {'Year':'2013', 'Model':'E', 'Price':'$5200' ,'Buy':'Buy Now'}]},                                                     {'Convertibles':                                                                                                           [{'Year':'2009', 'Model':'F', 'Price':'$2000' ,'Buy':'Buy Now'},
+                  {'Year':'2010', 'Model':'G', 'Price':'$6000' ,'Buy':'Buy Now'},
+                  {'Year':'2012', 'Model':'H', 'Price':'$12500' ,'Buy':'Buy Now'},
+                  {'Year':'2017', 'Model':'M', 'Price':'$50000' ,'Buy':'Buy Now'}]}]}  />
+          </div>
+        );
+      };
+
+      ReactDOM.render(
+        <TransportOptions/>,
+        document.getElementById("root")
+      );
+  </script>
+  </body>
+</html>
