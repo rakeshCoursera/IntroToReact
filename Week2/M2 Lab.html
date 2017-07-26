@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+  <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    var buttonStyle = {width:"320px", height:"55px", color:"blue"};
+    var headerStyle = {color:"red", "text-align":"center"};
+    class Game extends React.Component { 
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        return (
+          <div style={{width:"700px", padding:"20px", display:"table" }}>
+            <div style={{width:"350px", position: "fixed", display:"table-row"}}>
+              <h1 style={headerStyle}>What is 8 &times; 1</h1>
+              <button style={buttonStyle}>8</button><br/>
+              <button style={buttonStyle}>4</button><br/>
+              <button style={buttonStyle}>16</button><br/>
+              <button style={buttonStyle}>6</button>
+            </div>
+            <div style={{width:"250px", float:"right", display:"table-row"}}>
+              <h2 style={{height:"55px"}}></h2>
+              <h2>Correct: 0</h2>
+              <h2 style={{height:"55px"}}></h2>
+              <h2>Incorrect: 0</h2>
+            </div>
+          </div>
+      );
+    } 
+  } 
+  ReactDOM.render(
+    <Game/>, document.getElementById("root")
+  );
+  </script>
+</body>
+
+</html>
