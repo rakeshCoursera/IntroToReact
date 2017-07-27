@@ -15,7 +15,10 @@
     var buttonStyle = {width:"320px", height:"55px", color:"blue"};
     var headerStyle = {color:"red", "text-align":"center"};
     var quesAnsArray = [{"What is 8 &times; 1" :[{options: [8,4,16,6]}, {RightAns: 8} ] },
-                  {"What is in India": ["Effiel Tower", "Great Wall of China", "Mount Fuji", "Taj Mahal"]},{RightAns: "Taj Mahal"}];
+                  {"What is in India": [{options: ["Effiel Tower", "Great Wall of China", "Mount Fuji", "Taj Mahal"]}, {RightAns: "Taj Mahal"}]},
+                 {"Who hold the Sudharshna Chakra among Hindu Gods": [{options:["Lord Shiv","Lord Vishnu","Lord Brahma", "Lord Ram"]},{RightAns:"Lord Vishnu"}]}];
+    //add as much as you want but in the similar format 
+    
     class Game extends React.Component { 
       constructor(props) {
         super(props);
@@ -26,41 +29,80 @@
           answer: quesAnsArray[0][Object.keys(quesAnsArray[0])[0]][1].RightAns,
           correct: 0,
           incorrect: 0,
+          shouldDisable: false,
         };
         this.handleClick = this.handleClick.bind(this);
+        this.onRestartHandleClick = this.onRestartHandleClick.bind(this);
       }
 
-      handleClick(e) {
-        console.log(e);
-        this.setState({
-          question:Object.keys(quesAnsArray[index])[0],
-          options: quesAnsArray[index][Object.keys(quesAnsArray[index])[0]][0].options,
-          answer: quesAnsArray[index][Object.keys(quesAnsArray[index])[0]][1].RightAns,
-          }, function(){
-            this.setState({index: index+1});
+      handleClick(option) {
+        if(this.state.answer === option){
+          this.setState((prevState, props) => {
+            return { correct: prevState.correct + 1};
           });
+        } else {
+          this.setState((prevState, props) => {
+            return { incorrect: prevState.incorrect + 1};
+          });
+        }
+        this.setState((prevState, props) => {
+          if(prevState.index !== quesAnsArray.length){
+            return {
+              index: prevState.index + 1,
+              question:Object.keys(quesAnsArray[prevState.index])[0],
+              options: quesAnsArray[prevState.index][Object.keys(quesAnsArray[prevState.index])[0]][0].options,
+              answer: quesAnsArray[prevState.index][Object.keys(quesAnsArray[prevState.index])[0]][1].RightAns,
+              shouldDisable: false
+            }
+          } else {
+            return {shouldDisable: true};
+          }
+        });
+      }
+
+      onRestartHandleClick(){
+        this.setState({
+              index: 1,
+              question:Object.keys(quesAnsArray[0])[0],
+              options: quesAnsArray[0][Object.keys(quesAnsArray[0])[0]][0].options,
+              answer: quesAnsArray[0][Object.keys(quesAnsArray[0])[0]][1].RightAns,
+              correct: 0,
+              incorrect: 0,
+              shouldDisable: false,
+        });
       }
 
       render() {
-        var optionsVal = (this.state.options).map(function(val){
-          return (<button style={buttonStyle} onClick={this.handleClick}>{val}</button>);
-        });
         return (
           <div style={{width:"700px", padding:"20px" }}>
             <div style={{width:"350px", position: "fixed", display:"table-row"}}>
-              <h1 style={headerStyle}>{this.state.question}</h1>
-              {optionsVal}
+              <h1 style={headerStyle} dangerouslySetInnerHTML={{ __html: this.state.question }} />
+              <Button optionsValue={this.state.options} shouldDisable={this.state.shouldDisable} handleClick = {this.handleClick} /> <br/>
+              <button style = {{width:"120px", height:"35px", background: "black", color:"white"}} onClick={this.onRestartHandleClick} >Restart</button>
             </div>
             <div style={{width:"250px", float:"right"}}>
               <h2 style={{height:"55px"}}></h2>
-              <h2>Incorrect: {this.state.correct}</h2>
+              <h2>Correct: {this.state.correct}</h2>
               <h2 style={{height:"55px"}}></h2>
-              <h2>Correct: {this.state.incorrect}</h2>
+              <h2>Incorrect: {this.state.incorrect}</h2>
             </div>
           </div>
       );
     } 
   } 
+
+  function Button(props){
+    var optionsVal = (props.optionsValue).map(function(val,i){
+      console.log(val);
+      return (<button key={i} style = {buttonStyle} disabled={props.shouldDisable} onClick = {() => props.handleClick(val)}>{val}</button>);
+    }); 
+    return (
+      <div>
+        {optionsVal}
+      </div>
+    );
+  }
+  
   ReactDOM.render(
     <Game/>, document.getElementById("root")
   );
