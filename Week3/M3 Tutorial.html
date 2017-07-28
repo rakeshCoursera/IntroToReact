@@ -45,7 +45,7 @@
           { props.postList.map((item,index) =>
             <Post key={ index} title={ item.title} score={ item.score} incrementScore={ ()=> props.updateScore(index,1)} 
             decrementScore = {() => props.updateScore(index,-1)} removeItem = {() => props.removeItem(index)}/>
-          )};
+          )}
         </ol>
       );
     } 
@@ -78,8 +78,9 @@
       
       updateScore(index,val){
         var itemsCopy = this.state.items.slice();
-        itemsCopy[index].score += val itemsCopy.sort((a,b) => { 
-          return b.score - a.score
+        itemsCopy[index].score += val;
+        itemsCopy.sort((a,b) => { 
+          return b.score - a.score;
         });
         this.setState({items:itemsCopy});
       } 
