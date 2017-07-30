@@ -16,6 +16,48 @@
     var TABLEHEADER = ['Remove', 'First Name', 'Last Name', 'Activity', 'Restrictions'];
     var RESTRICTIONSARRAY = ['Dietary Restrictions','Physical Disabilities','Medical Needs'];
 
+    function PostButton(props){
+      var style = { width:24, height:24 };
+      return (
+        <button style={ style} onClick={ ()=> props.handleClick()}>{props.label}</button>
+      );
+    }
+
+    function RowValues(props){
+      return(
+        <tr style={{"text-align": "center"}}>
+          <td><PostButton label="x" handleClick={ props.removeItem}/></td>
+          <td>{props.values.fname}</td>
+          <td>{props.values.lname}</td>
+          <td>{props.values.actName}</td>
+          <td>{props.values.restrictions}</td>
+        </tr>
+      );
+    }
+
+    function Table(props){
+      var headers = props.header.map(function(val, index){
+        return (<th key={index}>{val}</th>);
+      });
+
+      var rows = props.data.map(function(val, index){
+        return(<RowValues key={index} values={val} removeItem={()=> props.removeItem(index)}/>);
+      });
+
+      if(props.data.length > 0){
+        return(
+          <table style={{width:"100%"}}>
+            <tr style={{"text-align": "center"}}>
+              {headers}
+            </tr>
+            {rows}
+          </table>
+        );
+      } else {
+        return (<div></div>);
+      }
+    }
+
     function InputList(props){
       var checkList=props.labels.map(function(val, index){
         var char = String.fromCharCode(97+index);
@@ -57,31 +99,46 @@
       }
 
       handleSubmitClick(){
-        this.setState({fname:'',
-          lname: '',
-          actName:ACTARRAY[0],
-          restrictions: ''
+        console.log(this.state.fname, this.state.lname, this.state.actName, this.state.restrictions, this.state.items);
+        console.log('here')
+        var itemsCopy = this.state.items.slice();
+        itemsCopy.push({ 
+          "fname": this.state.fname,
+          "lname": this.state.lname,
+          "actName": this.state.actName,
+          "restrictions": this.state.restrictions
         });
-        document.getElementById("registration-form").reset()
+        console.log('Items Copy: ', itemsCopy);
+        this.setState({
+          items: itemsCopy
+        }, function(){
+          console.log('after item', this.state.items);
+        });
       }
 
+      removeItem(index){
+        var itemsCopy = this.state.items.slice();
+        itemsCopy.splice(index,1);
+        this.setState({items:itemsCopy});
+      }
 
       render(){
-        console.log(this.state.fname, this.state.lname, this.state.actName, this.state.restrictions);
+        console.log(this.state.fname, this.state.lname, this.state.actName, this.state.restrictions, this.state.items);
         var options = ACTARRAY.map(function(val, index){
           return (<option key={index}>{val}</option>)
         });
 
         return(
           <form id="registration-form">
-            First Name <br/><input type="text" value={this.state.fname} onChange={this.handleFirstChange.bind(this)}/> <br/>
-            First Name <br/><input type="text" value={this.state.lname} onChange={this.handleLastChange.bind(this)}/> <br/>
+            First Name <br/><input type="text" style = {{width:200, height:25}} value={this.state.fname} onChange={this.handleFirstChange.bind(this)}/> <br/>
+            First Name <br/><input type="text" style = {{width:200, height:25}} value={this.state.lname} onChange={this.handleLastChange.bind(this)}/> <br/>
             Select Activity<br/>
-            <select value={this.state.actName} onChange={this.handleSelectChange.bind(this)}>
+            <select style = {{width:205, height:32}} value={this.state.actName} onChange={this.handleSelectChange.bind(this)}>
               {options}
             </select><br/>
             <InputList labels={RESTRICTIONSARRAY} handleClick={this.handleClick.bind(this)}/>
-            <button onClick={this.handleSubmitClick.bind(this)}>Submit</button>
+            <button style = {{width:205, height:32}} onClick={this.handleSubmitClick.bind(this)}>Submit</button>
+            <Table header={TABLEHEADER} data={this.state.items} removeItem={this.removeItem.bind(this)}/>
           </form>
         );
       }
