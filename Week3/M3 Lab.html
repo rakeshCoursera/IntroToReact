@@ -110,7 +110,11 @@
         });
         console.log('Items Copy: ', itemsCopy);
         this.setState({
-          items: itemsCopy
+          items: itemsCopy,
+          fname:'',
+          lname: '',
+          actName:ACTARRAY[0],
+          restrictions: '',
         }, function(){
           console.log('after item', this.state.items);
         });
